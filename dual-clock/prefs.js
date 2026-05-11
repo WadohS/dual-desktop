@@ -120,6 +120,15 @@ function createIconButton(iconName, tooltip, callback) {
     return button;
 }
 
+function createSwitch(active, callback) {
+    const widget = new Gtk.Switch({active, visible: true});
+    widget.set_halign(Gtk.Align.START);
+    widget.set_valign(Gtk.Align.CENTER);
+    widget.set_hexpand(false);
+    widget.connect('notify::active', callback);
+    return widget;
+}
+
 export default class DualClockPreferences extends ExtensionPreferences {
     getPreferencesWidget() {
         const settings = this.getSettings();
@@ -134,6 +143,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
             margin_end: 12,
             visible: true,
         });
+        outer.set_size_request(900, 820);
 
         const title = new Gtk.Label({
             label: `<b>${this.metadata.name}</b>`,
@@ -187,7 +197,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
             row_spacing: 12,
             visible: true,
         });
-        clockContent.append(createSectionHeader('preferences-system-time-symbolic', 'Dual Clock', 'Horloges sur les deux ecrans avec style coherent et position reglable.'));
+        clockContent.append(createSectionHeader('preferences-system-time-symbolic', 'Horloge', 'Horloges sur les deux ecrans avec style coherent et position reglable.'));
         clockContent.append(clockGrid);
 
         let clockRow = 0;
@@ -247,8 +257,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
         addSpin(clockGrid, clockRow++, 'Ecran 1 : offset bas', () => settings.get_int('offset-bottom'), value => settings.set_int('offset-bottom', value), 0, 2000, 5);
 
         const sameLabel = new Gtk.Label({label: 'Memes reglages sur les 2 ecrans', halign: Gtk.Align.START, visible: true});
-        const sameSwitch = new Gtk.Switch({active: settings.get_boolean('same-on-both-monitors'), visible: true});
-        sameSwitch.connect('notify::active', widget => {
+        const sameSwitch = createSwitch(settings.get_boolean('same-on-both-monitors'), widget => {
             const active = widget.get_active();
             settings.set_boolean('same-on-both-monitors', active);
             updateSecondMonitorVisibility(!active);
@@ -265,8 +274,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
         addSpin(clockGrid, clockRow++, 'Decalage horizontal 2e ligne', () => settings.get_int('date-offset-x'), value => settings.set_int('date-offset-x', value), -1000, 1000, 5);
 
         const colorAutoLabel = new Gtk.Label({label: 'Couleur auto noir/blanc selon le fond', halign: Gtk.Align.START, visible: true});
-        const colorAutoSwitch = new Gtk.Switch({active: settings.get_boolean('auto-text-color'), visible: true});
-        colorAutoSwitch.connect('notify::active', widget => settings.set_boolean('auto-text-color', widget.get_active()));
+        const colorAutoSwitch = createSwitch(settings.get_boolean('auto-text-color'), widget => settings.set_boolean('auto-text-color', widget.get_active()));
         clockGrid.attach(colorAutoLabel, 0, clockRow, 1, 1);
         clockGrid.attach(colorAutoSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
@@ -274,8 +282,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
         addEntry(clockGrid, clockRow++, 'Couleur manuelle (#rrggbb)', 'manual-text-color', '#ffffff');
 
         const orderLabel = new Gtk.Label({label: 'Heure au-dessus de la date', halign: Gtk.Align.START, visible: true});
-        const orderSwitch = new Gtk.Switch({active: settings.get_boolean('date-below-clock'), visible: true});
-        orderSwitch.connect('notify::active', widget => settings.set_boolean('date-below-clock', widget.get_active()));
+        const orderSwitch = createSwitch(settings.get_boolean('date-below-clock'), widget => settings.set_boolean('date-below-clock', widget.get_active()));
         clockGrid.attach(orderLabel, 0, clockRow, 1, 1);
         clockGrid.attach(orderSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
@@ -362,8 +369,8 @@ export default class DualClockPreferences extends ExtensionPreferences {
         const primaryEntry = new Gtk.Entry({text: wallpaperConfig.primary_folder, visible: true});
         const secondaryEntry = new Gtk.Entry({text: wallpaperConfig.secondary_folder, visible: true});
         const outputEntry = new Gtk.Entry({text: wallpaperConfig.output_file, visible: true});
-        const differentSwitch = new Gtk.Switch({active: wallpaperConfig.different_images, visible: true});
-        const recursiveSwitch = new Gtk.Switch({active: wallpaperConfig.recursive, visible: true});
+        const differentSwitch = createSwitch(wallpaperConfig.different_images, () => {});
+        const recursiveSwitch = createSwitch(wallpaperConfig.recursive, () => {});
         const intervalSpin = Gtk.SpinButton.new_with_range(1, 1440, 1);
         intervalSpin.set_value(wallpaperConfig.interval_minutes);
         const fillCombo = new Gtk.ComboBoxText({visible: true});
