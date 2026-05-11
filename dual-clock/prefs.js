@@ -120,26 +120,52 @@ export default class DualClockPreferences extends ExtensionPreferences {
         });
         outer.append(title);
 
-        const scrolled = new Gtk.ScrolledWindow({
+        const notebook = new Gtk.Notebook({
             hexpand: true,
             vexpand: true,
             visible: true,
         });
-        const content = new Gtk.Box({
+        const clockPage = new Gtk.ScrolledWindow({
+            hexpand: true,
+            vexpand: true,
+            visible: true,
+        });
+        const wallpaperPage = new Gtk.ScrolledWindow({
+            hexpand: true,
+            vexpand: true,
+            visible: true,
+        });
+        const clockContent = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 12,
             visible: true,
+            margin_top: 8,
+            margin_bottom: 8,
+            margin_start: 8,
+            margin_end: 8,
         });
-        scrolled.set_child(content);
-        outer.append(scrolled);
+        const wallpaperContent = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 12,
+            visible: true,
+            margin_top: 8,
+            margin_bottom: 8,
+            margin_start: 8,
+            margin_end: 8,
+        });
+        clockPage.set_child(clockContent);
+        wallpaperPage.set_child(wallpaperContent);
+        notebook.append_page(clockPage, new Gtk.Label({label: 'Clock', visible: true}));
+        notebook.append_page(wallpaperPage, new Gtk.Label({label: 'Wallpaper', visible: true}));
+        outer.append(notebook);
 
         const clockGrid = new Gtk.Grid({
             column_spacing: 12,
             row_spacing: 12,
             visible: true,
         });
-        content.append(createSectionHeader('preferences-system-time-symbolic', 'Dual Clock', 'Clocks on both monitors with matching style and per-monitor position.'));
-        content.append(clockGrid);
+        clockContent.append(createSectionHeader('preferences-system-time-symbolic', 'Dual Clock', 'Clocks on both monitors with matching style and per-monitor position.'));
+        clockContent.append(clockGrid);
 
         let clockRow = 0;
         const secondMonitorRows = [];
@@ -255,8 +281,8 @@ export default class DualClockPreferences extends ExtensionPreferences {
             row_spacing: 12,
             visible: true,
         });
-        content.append(createSectionHeader('preferences-desktop-wallpaper-symbolic', 'Dual Wallpaper', 'Two wallpapers on two monitors with one or two local folders and timed rotation.'));
-        content.append(wallpaperGrid);
+        wallpaperContent.append(createSectionHeader('preferences-desktop-wallpaper-symbolic', 'Dual Wallpaper', 'Two wallpapers on two monitors with one or two local folders and timed rotation.'));
+        wallpaperContent.append(wallpaperGrid);
 
         let wallpaperRow = 0;
         const wallpaperStatus = new Gtk.Label({label: '', halign: Gtk.Align.START, visible: true});
