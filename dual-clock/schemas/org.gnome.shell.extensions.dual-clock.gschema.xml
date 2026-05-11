@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.dual-clock" path="/org/gnome/shell/extensions/dual-clock/">
+    <key name="offset-right" type="i">
+      <default>60</default>
+      <summary>Right offset for monitor 1</summary>
+    </key>
+    <key name="offset-bottom" type="i">
+      <default>60</default>
+      <summary>Bottom offset for monitor 1</summary>
+    </key>
+    <key name="offset-right-2" type="i">
+      <default>60</default>
+      <summary>Right offset for monitor 2</summary>
+    </key>
+    <key name="offset-bottom-2" type="i">
+      <default>60</default>
+      <summary>Bottom offset for monitor 2</summary>
+    </key>
+    <key name="same-on-both-monitors" type="b">
+      <default>true</default>
+      <summary>Use same settings on both monitors</summary>
+    </key>
+    <key name="scale-percent" type="i">
+      <default>100</default>
+      <summary>Clock scale percent</summary>
+    </key>
+    <key name="clock-font-family" type="s">
+      <default>""</default>
+      <summary>Clock font family override</summary>
+    </key>
+    <key name="date-font-family" type="s">
+      <default>""</default>
+      <summary>Date font family override</summary>
+    </key>
+    <key name="auto-text-color" type="b">
+      <default>true</default>
+      <summary>Automatically switch text color based on wallpaper brightness</summary>
+    </key>
+    <key name="manual-text-color" type="s">
+      <default>"#ffffff"</default>
+      <summary>Manual text color when auto color is disabled</summary>
+    </key>
+    <key name="date-offset-x" type="i">
+      <default>0</default>
+      <summary>Horizontal offset of the date relative to the time</summary>
+    </key>
+    <key name="date-below-clock" type="b">
+      <default>true</default>
+      <summary>Place date below the clock</summary>
+    </key>
+    <key name="time-format" type="i">
+      <default>0</default>
+      <summary>Time format preset</summary>
+    </key>
+    <key name="date-format" type="i">
+      <default>1</default>
+      <summary>Date format preset</summary>
+    </key>
+  </schema>
+</schemalist>
