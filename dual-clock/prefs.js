@@ -97,6 +97,25 @@ function createSectionHeader(iconName, titleText, subtitleText) {
     return box;
 }
 
+function createTabLabel(iconName, text) {
+    const box = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL,
+        spacing: 6,
+        visible: true,
+    });
+    box.append(new Gtk.Image({icon_name: iconName, pixel_size: 16, visible: true}));
+    box.append(new Gtk.Label({label: text, visible: true}));
+    return box;
+}
+
+function createIconButton(iconName, tooltip, callback) {
+    const button = new Gtk.Button({visible: true, tooltip_text: tooltip});
+    button.add_css_class('circular');
+    button.set_child(new Gtk.Image({icon_name: iconName, pixel_size: 16, visible: true}));
+    button.connect('clicked', callback);
+    return button;
+}
+
 export default class DualClockPreferences extends ExtensionPreferences {
     getPreferencesWidget() {
         const settings = this.getSettings();
@@ -155,8 +174,8 @@ export default class DualClockPreferences extends ExtensionPreferences {
         });
         clockPage.set_child(clockContent);
         wallpaperPage.set_child(wallpaperContent);
-        notebook.append_page(clockPage, new Gtk.Label({label: 'Clock', visible: true}));
-        notebook.append_page(wallpaperPage, new Gtk.Label({label: 'Wallpaper', visible: true}));
+        notebook.append_page(clockPage, createTabLabel('preferences-system-time-symbolic', 'Horloge'));
+        notebook.append_page(wallpaperPage, createTabLabel('video-display-symbolic', 'Fonds'));
         outer.append(notebook);
 
         const clockGrid = new Gtk.Grid({
@@ -164,7 +183,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
             row_spacing: 12,
             visible: true,
         });
-        clockContent.append(createSectionHeader('preferences-system-time-symbolic', 'Dual Clock', 'Clocks on both monitors with matching style and per-monitor position.'));
+        clockContent.append(createSectionHeader('preferences-system-time-symbolic', 'Dual Clock', 'Horloges sur les deux ecrans avec style coherent et position reglable.'));
         clockContent.append(clockGrid);
 
         let clockRow = 0;
@@ -220,10 +239,10 @@ export default class DualClockPreferences extends ExtensionPreferences {
                 widget.set_visible(visible);
         };
 
-        addSpin(clockGrid, clockRow++, 'Monitor 1: right offset', () => settings.get_int('offset-right'), value => settings.set_int('offset-right', value), 0, 2000, 5);
-        addSpin(clockGrid, clockRow++, 'Monitor 1: bottom offset', () => settings.get_int('offset-bottom'), value => settings.set_int('offset-bottom', value), 0, 2000, 5);
+        addSpin(clockGrid, clockRow++, 'Ecran 1 : offset droite', () => settings.get_int('offset-right'), value => settings.set_int('offset-right', value), 0, 2000, 5);
+        addSpin(clockGrid, clockRow++, 'Ecran 1 : offset bas', () => settings.get_int('offset-bottom'), value => settings.set_int('offset-bottom', value), 0, 2000, 5);
 
-        const sameLabel = new Gtk.Label({label: 'Use same clock position on both monitors', halign: Gtk.Align.START, visible: true});
+        const sameLabel = new Gtk.Label({label: 'Memes reglages sur les 2 ecrans', halign: Gtk.Align.START, visible: true});
         const sameSwitch = new Gtk.Switch({active: settings.get_boolean('same-on-both-monitors'), visible: true});
         sameSwitch.connect('notify::active', widget => {
             const active = widget.get_active();
@@ -234,37 +253,37 @@ export default class DualClockPreferences extends ExtensionPreferences {
         clockGrid.attach(sameSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
 
-        addSpin(clockGrid, clockRow++, 'Monitor 2: right offset', () => settings.get_int('offset-right-2'), value => settings.set_int('offset-right-2', value), 0, 2000, 5, secondMonitorRows);
-        addSpin(clockGrid, clockRow++, 'Monitor 2: bottom offset', () => settings.get_int('offset-bottom-2'), value => settings.set_int('offset-bottom-2', value), 0, 2000, 5, secondMonitorRows);
-        addSpin(clockGrid, clockRow++, 'Scale (%)', () => settings.get_int('scale-percent'), value => settings.set_int('scale-percent', value), 25, 400, 5);
-        addFontButton(clockGrid, clockRow++, 'Clock font', 'clock-font-family');
-        addFontButton(clockGrid, clockRow++, 'Date font', 'date-font-family');
-        addSpin(clockGrid, clockRow++, 'Horizontal offset of visible second line', () => settings.get_int('date-offset-x'), value => settings.set_int('date-offset-x', value), -1000, 1000, 5);
+        addSpin(clockGrid, clockRow++, 'Ecran 2 : offset droite', () => settings.get_int('offset-right-2'), value => settings.set_int('offset-right-2', value), 0, 2000, 5, secondMonitorRows);
+        addSpin(clockGrid, clockRow++, 'Ecran 2 : offset bas', () => settings.get_int('offset-bottom-2'), value => settings.set_int('offset-bottom-2', value), 0, 2000, 5, secondMonitorRows);
+        addSpin(clockGrid, clockRow++, 'Agrandissement (%)', () => settings.get_int('scale-percent'), value => settings.set_int('scale-percent', value), 25, 400, 5);
+        addFontButton(clockGrid, clockRow++, 'Typo heure', 'clock-font-family');
+        addFontButton(clockGrid, clockRow++, 'Typo date', 'date-font-family');
+        addSpin(clockGrid, clockRow++, 'Decalage horizontal 2e ligne', () => settings.get_int('date-offset-x'), value => settings.set_int('date-offset-x', value), -1000, 1000, 5);
 
-        const colorAutoLabel = new Gtk.Label({label: 'Automatic black/white text based on wallpaper', halign: Gtk.Align.START, visible: true});
+        const colorAutoLabel = new Gtk.Label({label: 'Couleur auto noir/blanc selon le fond', halign: Gtk.Align.START, visible: true});
         const colorAutoSwitch = new Gtk.Switch({active: settings.get_boolean('auto-text-color'), visible: true});
         colorAutoSwitch.connect('notify::active', widget => settings.set_boolean('auto-text-color', widget.get_active()));
         clockGrid.attach(colorAutoLabel, 0, clockRow, 1, 1);
         clockGrid.attach(colorAutoSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
 
-        addEntry(clockGrid, clockRow++, 'Manual text color (#rrggbb)', 'manual-text-color', '#ffffff');
+        addEntry(clockGrid, clockRow++, 'Couleur manuelle (#rrggbb)', 'manual-text-color', '#ffffff');
 
-        const orderLabel = new Gtk.Label({label: 'Place time above date', halign: Gtk.Align.START, visible: true});
+        const orderLabel = new Gtk.Label({label: 'Heure au-dessus de la date', halign: Gtk.Align.START, visible: true});
         const orderSwitch = new Gtk.Switch({active: settings.get_boolean('date-below-clock'), visible: true});
         orderSwitch.connect('notify::active', widget => settings.set_boolean('date-below-clock', widget.get_active()));
         clockGrid.attach(orderLabel, 0, clockRow, 1, 1);
         clockGrid.attach(orderSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
 
-        addCombo(clockGrid, clockRow++, 'Time format', 'time-format', [
+        addCombo(clockGrid, clockRow++, 'Format d\'heure', 'time-format', [
             'FR / GB / DE 24h: 14:35',
             'FR 24h: 14h35',
             'US 12h: 02:35 PM',
             '24h with seconds: 14:35:20',
             'US 12h with seconds: 02:35:20 PM',
         ]);
-        addCombo(clockGrid, clockRow++, 'Date format', 'date-format', [
+        addCombo(clockGrid, clockRow++, 'Format de date', 'date-format', [
             'Monday, May 11',
             'Monday 11 May',
             'Mon 11 May',
@@ -281,7 +300,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
             row_spacing: 12,
             visible: true,
         });
-        wallpaperContent.append(createSectionHeader('preferences-desktop-wallpaper-symbolic', 'Dual Wallpaper', 'Two wallpapers on two monitors with one or two local folders and timed rotation.'));
+        wallpaperContent.append(createSectionHeader('preferences-desktop-wallpaper-symbolic', 'Dual Wallpaper', 'Deux fonds sur deux ecrans avec un ou deux dossiers locaux et rotation temporisee.'));
         wallpaperContent.append(wallpaperGrid);
 
         let wallpaperRow = 0;
@@ -388,25 +407,20 @@ export default class DualClockPreferences extends ExtensionPreferences {
         addWallpaperEntry(wallpaperRow++, 'Output file', outputEntry, false);
 
         const buttonBox = new Gtk.Box({spacing: 12, visible: true});
-        const saveButton = new Gtk.Button({label: 'Save', visible: true});
-        saveButton.connect('clicked', saveWallpaper);
-        const applyButton = new Gtk.Button({label: 'Apply now', visible: true});
-        applyButton.connect('clicked', () => {
+        const saveButton = createIconButton('document-save-symbolic', 'Enregistrer', saveWallpaper);
+        const applyButton = createIconButton('view-refresh-symbolic', 'Appliquer maintenant', () => {
             saveWallpaper();
             runWallpaperCommand([WALLPAPER_CLI, '--apply']);
         });
-        const previousButton = new Gtk.Button({label: 'Previous', visible: true});
-        previousButton.connect('clicked', () => {
+        const previousButton = createIconButton('media-skip-backward-symbolic', 'Precedent', () => {
             saveWallpaper();
             runWallpaperCommand([WALLPAPER_CLI, '--previous']);
         });
-        const nextButton = new Gtk.Button({label: 'Next', visible: true});
-        nextButton.connect('clicked', () => {
+        const nextButton = createIconButton('media-skip-forward-symbolic', 'Suivant', () => {
             saveWallpaper();
             runWallpaperCommand([WALLPAPER_CLI, '--apply']);
         });
-        const restartButton = new Gtk.Button({label: 'Restart service', visible: true});
-        restartButton.connect('clicked', () => {
+        const restartButton = createIconButton('system-reboot-symbolic', 'Redemarrer le service', () => {
             saveWallpaper();
             runWallpaperCommand(['systemctl', '--user', 'restart', 'dual-wallpaper.service']);
         });

@@ -22,6 +22,7 @@ Icon=preferences-desktop-display
 Terminal=false
 Type=Application
 Categories=Utility;GNOME;
+NoDisplay=true
 EOF
 
 (
