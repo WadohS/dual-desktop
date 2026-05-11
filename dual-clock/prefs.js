@@ -111,6 +111,10 @@ function createTabLabel(iconName, text) {
 function createIconButton(iconName, tooltip, callback) {
     const button = new Gtk.Button({visible: true, tooltip_text: tooltip});
     button.add_css_class('circular');
+    button.add_css_class('flat');
+    button.set_size_request(38, 38);
+    button.set_halign(Gtk.Align.CENTER);
+    button.set_valign(Gtk.Align.CENTER);
     button.set_child(new Gtk.Image({icon_name: iconName, pixel_size: 16, visible: true}));
     button.connect('clicked', callback);
     return button;
@@ -280,16 +284,16 @@ export default class DualClockPreferences extends ExtensionPreferences {
             'FR / GB / DE 24h: 14:35',
             'FR 24h: 14h35',
             'US 12h: 02:35 PM',
-            '24h with seconds: 14:35:20',
-            'US 12h with seconds: 02:35:20 PM',
+            '24h avec secondes: 14:35:20',
+            'US 12h avec secondes: 02:35:20 PM',
         ]);
         addCombo(clockGrid, clockRow++, 'Format de date', 'date-format', [
-            'Monday, May 11',
-            'Monday 11 May',
-            'Mon 11 May',
+            'Lundi, Mai 11',
+            'Lundi 11 Mai',
+            'Lun 11 Mai',
             '11 May',
             '11/05/2026',
-            'Monday 11 May 2026',
+            'Lundi 11 Mai 2026',
             '11.05.2026',
             '05/11/2026',
         ]);
@@ -368,8 +372,8 @@ export default class DualClockPreferences extends ExtensionPreferences {
         fillCombo.set_active_id(wallpaperConfig.fill_color);
 
         addWallpaperEntry(wallpaperRow++, 'Mode', modeCombo, false);
-        addWallpaperEntry(wallpaperRow++, 'Monitor 1 folder', primaryEntry, true);
-        const secondaryLabel = new Gtk.Label({label: 'Monitor 2 folder', halign: Gtk.Align.START, visible: wallpaperConfig.mode === 'split'});
+        addWallpaperEntry(wallpaperRow++, 'Dossier ecran 1', primaryEntry, true);
+        const secondaryLabel = new Gtk.Label({label: 'Dossier ecran 2', halign: Gtk.Align.START, visible: wallpaperConfig.mode === 'split'});
         wallpaperGrid.attach(secondaryLabel, 0, wallpaperRow, 1, 1);
         wallpaperGrid.attach(secondaryEntry, 1, wallpaperRow, 1, 1);
         const secondaryButton = new Gtk.Button({label: 'Choose...', visible: wallpaperConfig.mode === 'split'});
@@ -384,27 +388,27 @@ export default class DualClockPreferences extends ExtensionPreferences {
             secondaryButton.set_visible(split);
         });
 
-        const differentLabel = new Gtk.Label({label: 'Force different images', halign: Gtk.Align.START, visible: true});
+        const differentLabel = new Gtk.Label({label: 'Forcer des images differentes', halign: Gtk.Align.START, visible: true});
         wallpaperGrid.attach(differentLabel, 0, wallpaperRow, 1, 1);
         wallpaperGrid.attach(differentSwitch, 1, wallpaperRow, 1, 1);
         wallpaperRow += 1;
 
-        const recursiveLabel = new Gtk.Label({label: 'Recursive scan', halign: Gtk.Align.START, visible: true});
+        const recursiveLabel = new Gtk.Label({label: 'Recherche recursive', halign: Gtk.Align.START, visible: true});
         wallpaperGrid.attach(recursiveLabel, 0, wallpaperRow, 1, 1);
         wallpaperGrid.attach(recursiveSwitch, 1, wallpaperRow, 1, 1);
         wallpaperRow += 1;
 
-        const intervalLabel = new Gtk.Label({label: 'Interval (minutes)', halign: Gtk.Align.START, visible: true});
+        const intervalLabel = new Gtk.Label({label: 'Intervalle (minutes)', halign: Gtk.Align.START, visible: true});
         wallpaperGrid.attach(intervalLabel, 0, wallpaperRow, 1, 1);
         wallpaperGrid.attach(intervalSpin, 1, wallpaperRow, 1, 1);
         wallpaperRow += 1;
 
-        const fillLabel = new Gtk.Label({label: 'Fill color', halign: Gtk.Align.START, visible: true});
+        const fillLabel = new Gtk.Label({label: 'Couleur de remplissage', halign: Gtk.Align.START, visible: true});
         wallpaperGrid.attach(fillLabel, 0, wallpaperRow, 1, 1);
         wallpaperGrid.attach(fillCombo, 1, wallpaperRow, 1, 1);
         wallpaperRow += 1;
 
-        addWallpaperEntry(wallpaperRow++, 'Output file', outputEntry, false);
+        addWallpaperEntry(wallpaperRow++, 'Fichier de sortie', outputEntry, false);
 
         const buttonBox = new Gtk.Box({spacing: 12, visible: true});
         const saveButton = createIconButton('document-save-symbolic', 'Enregistrer', saveWallpaper);
