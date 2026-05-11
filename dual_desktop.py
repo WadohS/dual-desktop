@@ -45,28 +45,28 @@ class DualDesktop(Gtk.Application):
         outer.set_margin_end(12)
 
         title = Gtk.Label(label='<b>Dual Desktop</b>', use_markup=True, halign=Gtk.Align.START)
-        subtitle = Gtk.Label(label='Control center for Dual Clock and Dual Wallpaper', halign=Gtk.Align.START)
+        subtitle = Gtk.Label(label='Centre de controle pour l\'horloge et les fonds double ecran', halign=Gtk.Align.START)
         outer.append(title)
         outer.append(subtitle)
 
-        frame_clock = Gtk.Frame(label='Dual Clock')
+        frame_clock = Gtk.Frame(label='Horloge')
         box_clock = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        btn_clock_prefs = Gtk.Button(label='Open Clock Settings')
+        btn_clock_prefs = Gtk.Button(label='Ouvrir les reglages horloge')
         btn_clock_prefs.connect('clicked', self._open_clock_settings)
         box_clock.append(btn_clock_prefs)
         frame_clock.set_child(box_clock)
         outer.append(frame_clock)
 
-        frame_wallpaper = Gtk.Frame(label='Dual Wallpaper')
+        frame_wallpaper = Gtk.Frame(label='Fonds')
         box_wallpaper = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         buttons_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
 
         for label, callback in (
-            ('Open Wallpaper Settings', self._open_wallpaper_settings),
-            ('Apply Now', self._apply_now),
-            ('Previous', self._previous),
-            ('Next', self._next),
-            ('Restart Service', self._restart_service),
+            ('Ouvrir les reglages fonds', self._open_wallpaper_settings),
+            ('Appliquer', self._apply_now),
+            ('Precedent', self._previous),
+            ('Suivant', self._next),
+            ('Redemarrer le service', self._restart_service),
         ):
             button = Gtk.Button(label=label)
             button.connect('clicked', callback)
@@ -92,19 +92,19 @@ class DualDesktop(Gtk.Application):
 
     def _apply_now(self, *_args) -> None:
         ok, msg = run_command([WALLPAPER_CLI, '--apply'])
-        self._set_status(ok, 'Wallpaper pair applied.', 'Apply failed', msg)
+        self._set_status(ok, 'Couple de fonds applique.', 'Echec de l\'application', msg)
 
     def _previous(self, *_args) -> None:
         ok, msg = run_command([WALLPAPER_CLI, '--previous'])
-        self._set_status(ok, 'Previous wallpaper pair applied.', 'Previous failed', msg)
+        self._set_status(ok, 'Couple precedent applique.', 'Echec du precedent', msg)
 
     def _next(self, *_args) -> None:
         ok, msg = run_command([WALLPAPER_CLI, '--apply'])
-        self._set_status(ok, 'Next wallpaper pair applied.', 'Next failed', msg)
+        self._set_status(ok, 'Couple suivant applique.', 'Echec du suivant', msg)
 
     def _restart_service(self, *_args) -> None:
         ok, msg = run_command(['systemctl', '--user', 'restart', 'dual-wallpaper.service'])
-        self._set_status(ok, 'Dual Wallpaper service restarted.', 'Restart failed', msg)
+        self._set_status(ok, 'Service des fonds redemarre.', 'Echec du redemarrage', msg)
 
 
 def main() -> int:
