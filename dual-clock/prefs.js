@@ -130,7 +130,7 @@ function createSwitch(active, callback) {
 }
 
 export default class DualClockPreferences extends ExtensionPreferences {
-    getPreferencesWidget() {
+    _buildPreferencesWidget() {
         const settings = this.getSettings();
         const wallpaperConfig = ensureWallpaperConfig();
 
@@ -143,8 +143,6 @@ export default class DualClockPreferences extends ExtensionPreferences {
             margin_end: 12,
             visible: true,
         });
-        outer.set_size_request(980, 1200);
-
         const title = new Gtk.Label({
             label: `<b>${this.metadata.name}</b>`,
             use_markup: true,
@@ -441,5 +439,14 @@ export default class DualClockPreferences extends ExtensionPreferences {
         wallpaperGrid.attach(wallpaperStatus, 0, wallpaperRow, 3, 1);
 
         return outer;
+    }
+
+    fillPreferencesWindow(window) {
+        window.set_default_size(980, 1200);
+        window.set_child(this._buildPreferencesWidget());
+    }
+
+    getPreferencesWidget() {
+        return this._buildPreferencesWidget();
     }
 }
