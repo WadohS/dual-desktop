@@ -130,7 +130,7 @@ function createSwitch(active, callback) {
 }
 
 export default class DualClockPreferences extends ExtensionPreferences {
-    _buildPreferencesWidget() {
+    getPreferencesWidget() {
         const settings = this.getSettings();
         const wallpaperConfig = ensureWallpaperConfig();
 
@@ -439,14 +439,5 @@ export default class DualClockPreferences extends ExtensionPreferences {
         wallpaperGrid.attach(wallpaperStatus, 0, wallpaperRow, 3, 1);
 
         return outer;
-    }
-
-    fillPreferencesWindow(window) {
-        window.set_default_size(980, 1200);
-        window.set_child(this._buildPreferencesWidget());
-    }
-
-    getPreferencesWidget() {
-        return this._buildPreferencesWidget();
     }
 }
