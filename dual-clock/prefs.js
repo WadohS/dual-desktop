@@ -143,7 +143,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
             margin_end: 12,
             visible: true,
         });
-        outer.set_size_request(900, 820);
+        outer.set_size_request(980, 980);
 
         const title = new Gtk.Label({
             label: `<b>${this.metadata.name}</b>`,
