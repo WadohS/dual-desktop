@@ -1,6 +1,6 @@
 {
   "uuid": "dual-clock@wadohs",
-  "name": "Dual Clock",
+  "name": "Dual Desktop",
   "description": "Display clocks on each monitor with configurable position and formatting.",
   "settings-schema": "org.gnome.shell.extensions.dual-clock",
   "shell-version": ["50"],
