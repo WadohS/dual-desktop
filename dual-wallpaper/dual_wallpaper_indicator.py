@@ -53,7 +53,7 @@ def build_menu() -> Gtk.Menu:
 def main() -> int:
     indicator = AyatanaAppIndicator3.Indicator.new(
         'dual-wallpaper-indicator',
-        'preferences-desktop-wallpaper',
+        'dual-desktop',
         AyatanaAppIndicator3.IndicatorCategory.APPLICATION_STATUS,
     )
     indicator.set_status(AyatanaAppIndicator3.IndicatorStatus.ACTIVE)
