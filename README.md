@@ -13,7 +13,6 @@ The repository already provides a shared installer and a small control center wh
 
 - `dual-clock/`: GNOME Shell extension
 - `dual-wallpaper/`: local wallpaper rotator utility, service and preferences app
-- `dual_desktop.py`: unified launcher/control center
 - `install.sh`: unified installer
 - `package-extension.sh`: build the GNOME Shell extension archive from `dual-clock/`
 
@@ -27,7 +26,7 @@ This installs:
 
 - `Dual Desktop` clock extension
 - `Dual Wallpaper` service and indicator
-- a `Dual Desktop` control center launcher
+- shared branding assets
 
 ### GNOME Extensions Packaging
 
@@ -58,7 +57,6 @@ Le depot fournit deja un installateur commun et un petit centre de controle, tou
 
 - `dual-clock/` : extension GNOME Shell
 - `dual-wallpaper/` : utilitaire local de rotation de fonds, service et fenetre de preferences
-- `dual_desktop.py` : lanceur / centre de controle unifie
 - `install.sh` : installateur unifie
 - `package-extension.sh` : fabrique l'archive de l'extension GNOME a partir de `dual-clock/`
 
@@ -72,7 +70,7 @@ Cela installe :
 
 - l'extension d'horloge `Dual Desktop`
 - le service et l'indicateur `Dual Wallpaper`
-- un lanceur `Dual Desktop`
+- les ressources de branding partagees
 
 ### Packaging GNOME Extensions
 
