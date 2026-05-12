@@ -340,6 +340,7 @@ export default class DualClockPreferences extends ExtensionPreferences {
         addFontButton(clockGrid, clockRow++, 'Typo heure', 'clock-font-family');
         addFontButton(clockGrid, clockRow++, 'Typo date', 'date-font-family');
         addSpin(clockGrid, clockRow++, 'Decalage horizontal 2e ligne', () => settings.get_int('date-offset-x'), value => settings.set_int('date-offset-x', value), -1000, 1000, 5);
+        addSpin(clockGrid, clockRow++, 'Interligne 2e ligne', () => settings.get_int('second-line-offset-y'), value => settings.set_int('second-line-offset-y', value), -1000, 1000, 5);
 
         const colorAutoLabel = createFieldLabel('Couleur auto noir/blanc selon le fond');
         const colorAutoSwitch = createSwitch(settings.get_boolean('auto-text-color'), widget => settings.set_boolean('auto-text-color', widget.get_active()));

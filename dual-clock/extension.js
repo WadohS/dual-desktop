@@ -283,6 +283,10 @@ class ClockOverlay {
         return this.settings.get_int('date-offset-x');
     }
 
+    _secondLineOffsetY() {
+        return this.settings.get_int('second-line-offset-y');
+    }
+
     _updateOrder(texts) {
         this.clockLabel.text = texts.clock;
         this.dateLabel.text = texts.date;
@@ -310,6 +314,7 @@ class ClockOverlay {
         const padding = this._padding();
         const spacing = this._spacing();
         const secondLineOffset = this._scale(this._dateOffsetX());
+        const secondLineOffsetY = this._scale(this._secondLineOffsetY());
         const [, clockWidth] = this.clockLabel.get_preferred_width(-1);
         const [, clockHeight] = this.clockLabel.get_preferred_height(-1);
         const [, dateWidth] = this.dateLabel.get_preferred_width(-1);
@@ -328,7 +333,11 @@ class ClockOverlay {
         const minX = Math.min(firstX, secondX);
         const maxX = Math.max(firstX + firstWidth, secondX + secondWidth);
         const contentWidth = maxX - minX;
-        const contentHeight = firstHeight + spacing + secondHeight;
+        const firstY = 0;
+        const secondY = firstHeight + spacing + secondLineOffsetY;
+        const minY = Math.min(firstY, secondY);
+        const maxY = Math.max(firstY + firstHeight, secondY + secondHeight);
+        const contentHeight = maxY - minY;
         const actorWidth = contentWidth + padding * 2;
         const actorHeight = contentHeight + padding * 2;
 
@@ -339,8 +348,8 @@ class ClockOverlay {
         const x = clamp(rawX, this.monitor.x, this.monitor.x + this.monitor.width - actorWidth);
         const y = clamp(rawY, this.monitor.y, this.monitor.y + this.monitor.height - actorHeight);
 
-        firstLabel.set_position(padding + firstX - minX, padding);
-        secondLabel.set_position(padding + secondX - minX, padding + firstHeight + spacing);
+        firstLabel.set_position(padding + firstX - minX, padding + firstY - minY);
+        secondLabel.set_position(padding + secondX - minX, padding + secondY - minY);
 
         this.actor.set_position(x, y);
         this.actor.set_size(actorWidth, actorHeight);
