@@ -1,6 +1,7 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import GdkPixbuf from 'gi://GdkPixbuf';
+import Pango from 'gi://Pango';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -57,17 +58,35 @@ function currentWallpaperPath() {
 }
 
 function parseFontSpec(value, fallbackFamily, fallbackSize) {
-    if (!value)
-        return {family: fallbackFamily, size: fallbackSize};
-
-    const match = value.match(/^(.*\S)\s+(\d+(?:\.\d+)?)$/);
-    if (!match)
-        return {family: value, size: fallbackSize};
+    const description = Pango.FontDescription.from_string(value || `${fallbackFamily} ${fallbackSize}`);
+    const family = description.get_family() || fallbackFamily;
+    const size = description.get_size() > 0 ? description.get_size() / Pango.SCALE : fallbackSize;
+    const weight = description.get_weight();
+    const style = description.get_style();
 
     return {
-        family: match[1],
-        size: Number.parseFloat(match[2]),
+        family,
+        size,
+        weight,
+        style,
     };
+}
+
+function cssForFontSpec(spec, color, shadow) {
+    let styleName = 'normal';
+    if (spec.style === Pango.Style.ITALIC)
+        styleName = 'italic';
+    else if (spec.style === Pango.Style.OBLIQUE)
+        styleName = 'oblique';
+
+    return [
+        `font-family: "${spec.family}"`,
+        `font-size: ${spec.size}px`,
+        `font-weight: ${spec.weight}`,
+        `font-style: ${styleName}`,
+        `color: ${color}`,
+        `text-shadow: ${shadow}`,
+    ].join('; ') + ';';
 }
 
 function averageLuminanceForRegion(pixbuf, x, y, width, height) {
@@ -178,10 +197,6 @@ function monitorSettingKey(baseKey, monitorIndex) {
     return `${baseKey}-${monitorIndex + 1}`;
 }
 
-function gridRowsForMonitor(monitor) {
-    return Math.max(3, Math.round((10 * monitor.height) / monitor.width));
-}
-
 function clamp(value, minimum, maximum) {
     return Math.min(Math.max(value, minimum), maximum);
 }
@@ -248,20 +263,12 @@ class ClockOverlay {
         return value || fallback;
     }
 
-    _clockFontFamily() {
-        return parseFontSpec(this._settingString('clock-font-family', ''), this.varietyConfig.clockFont, this.varietyConfig.clockSize).family;
+    _clockFontSpec() {
+        return parseFontSpec(this._settingString('clock-font-family', ''), this.varietyConfig.clockFont, this.varietyConfig.clockSize);
     }
 
-    _dateFontFamily() {
-        return parseFontSpec(this._settingString('date-font-family', ''), this.varietyConfig.dateFont, this.varietyConfig.dateSize).family;
-    }
-
-    _clockFontSize() {
-        return parseFontSpec(this._settingString('clock-font-family', ''), this.varietyConfig.clockFont, this.varietyConfig.clockSize).size;
-    }
-
-    _dateFontSize() {
-        return parseFontSpec(this._settingString('date-font-family', ''), this.varietyConfig.dateFont, this.varietyConfig.dateSize).size;
+    _dateFontSpec() {
+        return parseFontSpec(this._settingString('date-font-family', ''), this.varietyConfig.dateFont, this.varietyConfig.dateSize);
     }
 
     _padding() {
@@ -282,16 +289,18 @@ class ClockOverlay {
     }
 
     _applyStyles() {
-        const clockSize = this._scale(this._clockFontSize());
-        const dateSize = this._scale(this._dateFontSize());
+        const clockFont = this._clockFontSpec();
+        const dateFont = this._dateFontSpec();
+        clockFont.size = this._scale(clockFont.size);
+        dateFont.size = this._scale(dateFont.size);
         const shadowOffset = this._scale(2);
         const textColor = this._textColor ?? BRIGHT_TEXT;
         const shadowColor = isDarkColor(textColor)
             ? `rgba(255, 255, 255, ${SHADOW_ALPHA})`
             : `rgba(0, 0, 0, ${SHADOW_ALPHA})`;
         const shadow = `${shadowOffset}px ${shadowOffset}px 0 ${shadowColor}`;
-        const clockStyle = `font-family: "${this._clockFontFamily()}"; font-size: ${clockSize}px; font-weight: 500; color: ${textColor}; text-shadow: ${shadow};`;
-        const dateStyle = `font-family: "${this._dateFontFamily()}"; font-size: ${dateSize}px; font-weight: 500; color: ${textColor}; text-shadow: ${shadow};`;
+        const clockStyle = cssForFontSpec(clockFont, textColor, shadow);
+        const dateStyle = cssForFontSpec(dateFont, textColor, shadow);
 
         this.clockLabel.style = clockStyle;
         this.dateLabel.style = dateStyle;
