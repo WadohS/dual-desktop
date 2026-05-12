@@ -56,6 +56,20 @@ function currentWallpaperPath() {
     }
 }
 
+function parseFontSpec(value, fallbackFamily, fallbackSize) {
+    if (!value)
+        return {family: fallbackFamily, size: fallbackSize};
+
+    const match = value.match(/^(.*\S)\s+(\d+(?:\.\d+)?)$/);
+    if (!match)
+        return {family: value, size: fallbackSize};
+
+    return {
+        family: match[1],
+        size: Number.parseFloat(match[2]),
+    };
+}
+
 function averageLuminanceForRegion(pixbuf, x, y, width, height) {
     const pixels = pixbuf.get_pixels();
     const rowstride = pixbuf.get_rowstride();
@@ -164,6 +178,14 @@ function monitorSettingKey(baseKey, monitorIndex) {
     return `${baseKey}-${monitorIndex + 1}`;
 }
 
+function gridRowsForMonitor(monitor) {
+    return Math.max(3, Math.round((10 * monitor.height) / monitor.width));
+}
+
+function clamp(value, minimum, maximum) {
+    return Math.min(Math.max(value, minimum), maximum);
+}
+
 class ClockOverlay {
     constructor(monitor, monitorIndex, settings, varietyConfig) {
         this.monitor = monitor;
@@ -205,17 +227,41 @@ class ClockOverlay {
         return this.settings.get_int(monitorSettingKey(keyBase, this.monitorIndex));
     }
 
+    _positionX() {
+        return this._settingInt('position-x');
+    }
+
+    _positionY() {
+        return this._settingInt('position-y');
+    }
+
+    _blockOffsetX() {
+        return this._settingInt('block-offset-x');
+    }
+
+    _blockOffsetY() {
+        return this._settingInt('block-offset-y');
+    }
+
     _settingString(key, fallback) {
         const value = this.settings.get_string(key);
         return value || fallback;
     }
 
     _clockFontFamily() {
-        return this._settingString('clock-font-family', this.varietyConfig.clockFont);
+        return parseFontSpec(this._settingString('clock-font-family', ''), this.varietyConfig.clockFont, this.varietyConfig.clockSize).family;
     }
 
     _dateFontFamily() {
-        return this._settingString('date-font-family', this.varietyConfig.dateFont);
+        return parseFontSpec(this._settingString('date-font-family', ''), this.varietyConfig.dateFont, this.varietyConfig.dateSize).family;
+    }
+
+    _clockFontSize() {
+        return parseFontSpec(this._settingString('clock-font-family', ''), this.varietyConfig.clockFont, this.varietyConfig.clockSize).size;
+    }
+
+    _dateFontSize() {
+        return parseFontSpec(this._settingString('date-font-family', ''), this.varietyConfig.dateFont, this.varietyConfig.dateSize).size;
     }
 
     _padding() {
@@ -236,8 +282,8 @@ class ClockOverlay {
     }
 
     _applyStyles() {
-        const clockSize = this._scale(this.varietyConfig.clockSize);
-        const dateSize = this._scale(this.varietyConfig.dateSize);
+        const clockSize = this._scale(this._clockFontSize());
+        const dateSize = this._scale(this._dateFontSize());
         const shadowOffset = this._scale(2);
         const textColor = this._textColor ?? BRIGHT_TEXT;
         const shadowColor = isDarkColor(textColor)
@@ -276,8 +322,13 @@ class ClockOverlay {
         const contentHeight = firstHeight + spacing + secondHeight;
         const actorWidth = contentWidth + padding * 2;
         const actorHeight = contentHeight + padding * 2;
-        const x = this.monitor.x + this.monitor.width - actorWidth - this._settingInt('offset-right');
-        const y = this.monitor.y + this.monitor.height - actorHeight - this._settingInt('offset-bottom');
+
+        const xPercent = clamp(this._positionX(), 0, 100) / 100;
+        const yPercent = clamp(this._positionY(), 0, 100) / 100;
+        const rawX = Math.round(this.monitor.x + xPercent * (this.monitor.width - actorWidth) + this._blockOffsetX());
+        const rawY = Math.round(this.monitor.y + yPercent * (this.monitor.height - actorHeight) + this._blockOffsetY());
+        const x = clamp(rawX, this.monitor.x, this.monitor.x + this.monitor.width - actorWidth);
+        const y = clamp(rawY, this.monitor.y, this.monitor.y + this.monitor.height - actorHeight);
 
         firstLabel.set_position(padding + firstX - minX, padding);
         secondLabel.set_position(padding + secondX - minX, padding + firstHeight + spacing);
