@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.dual-clock" path="/org/gnome/shell/extensions/dual-clock/">
-    <key name="offset-right" type="i">
-      <default>60</default>
-      <summary>Right offset for monitor 1</summary>
+    <key name="position-x" type="i">
+      <default>100</default>
+      <summary>Horizontal position percentage for monitor 1</summary>
     </key>
-    <key name="offset-bottom" type="i">
-      <default>60</default>
-      <summary>Bottom offset for monitor 1</summary>
+    <key name="position-y" type="i">
+      <default>100</default>
+      <summary>Vertical position percentage for monitor 1</summary>
     </key>
-    <key name="offset-right-2" type="i">
-      <default>60</default>
-      <summary>Right offset for monitor 2</summary>
+    <key name="block-offset-x" type="i">
+      <default>0</default>
+      <summary>Horizontal block offset for monitor 1</summary>
     </key>
-    <key name="offset-bottom-2" type="i">
-      <default>60</default>
-      <summary>Bottom offset for monitor 2</summary>
+    <key name="block-offset-y" type="i">
+      <default>0</default>
+      <summary>Vertical block offset for monitor 1</summary>
+    </key>
+    <key name="position-x-2" type="i">
+      <default>100</default>
+      <summary>Horizontal position percentage for monitor 2</summary>
+    </key>
+    <key name="position-y-2" type="i">
+      <default>100</default>
+      <summary>Vertical position percentage for monitor 2</summary>
+    </key>
+    <key name="block-offset-x-2" type="i">
+      <default>0</default>
+      <summary>Horizontal block offset for monitor 2</summary>
+    </key>
+    <key name="block-offset-y-2" type="i">
+      <default>0</default>
+      <summary>Vertical block offset for monitor 2</summary>
     </key>
     <key name="same-on-both-monitors" type="b">
       <default>true</default>
@@ -44,6 +60,10 @@
     <key name="date-offset-x" type="i">
       <default>0</default>
       <summary>Horizontal offset of the date relative to the time</summary>
+    </key>
+    <key name="second-line-offset-y" type="i">
+      <default>0</default>
+      <summary>Vertical offset of the second line relative to the first</summary>
     </key>
     <key name="date-below-clock" type="b">
       <default>true</default>

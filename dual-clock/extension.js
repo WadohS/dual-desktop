@@ -230,9 +230,14 @@ class ClockOverlay {
         return this.settings.get_boolean('same-on-both-monitors');
     }
 
-    _scale(value) {
+    _scaleDimension(value) {
         const scalePercent = this.settings.get_int('scale-percent');
         return Math.max(1, Math.round(value * scalePercent / 100));
+    }
+
+    _scaleValue(value) {
+        const scalePercent = this.settings.get_int('scale-percent');
+        return Math.round(value * scalePercent / 100);
     }
 
     _settingInt(keyBase) {
@@ -272,11 +277,11 @@ class ClockOverlay {
     }
 
     _padding() {
-        return this._scale(6);
+        return this._scaleDimension(6);
     }
 
     _spacing() {
-        return this._scale(4);
+        return this._scaleDimension(4);
     }
 
     _dateOffsetX() {
@@ -295,9 +300,9 @@ class ClockOverlay {
     _applyStyles() {
         const clockFont = this._clockFontSpec();
         const dateFont = this._dateFontSpec();
-        clockFont.size = this._scale(clockFont.size);
-        dateFont.size = this._scale(dateFont.size);
-        const shadowOffset = this._scale(2);
+        clockFont.size = this._scaleDimension(clockFont.size);
+        dateFont.size = this._scaleDimension(dateFont.size);
+        const shadowOffset = this._scaleDimension(2);
         const textColor = this._textColor ?? BRIGHT_TEXT;
         const shadowColor = isDarkColor(textColor)
             ? `rgba(255, 255, 255, ${SHADOW_ALPHA})`
@@ -313,8 +318,8 @@ class ClockOverlay {
     relayout() {
         const padding = this._padding();
         const spacing = this._spacing();
-        const secondLineOffset = this._scale(this._dateOffsetX());
-        const secondLineOffsetY = this._scale(this._secondLineOffsetY());
+        const secondLineOffset = this._scaleValue(this._dateOffsetX());
+        const secondLineOffsetY = this._scaleValue(this._secondLineOffsetY());
         const [, clockWidth] = this.clockLabel.get_preferred_width(-1);
         const [, clockHeight] = this.clockLabel.get_preferred_height(-1);
         const [, dateWidth] = this.dateLabel.get_preferred_width(-1);

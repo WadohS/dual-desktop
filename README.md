@@ -1,22 +1,23 @@
 # Dual Desktop
 
-`Dual Desktop` is the umbrella project that merges:
+## EN
+
+`Dual Desktop` combines two user-facing components for GNOME:
 
 - `dual-clock`: GNOME Shell extension for dual-monitor clocks
 - `dual-wallpaper`: local dual-monitor wallpaper rotator for GNOME
 
-At this stage, the repository keeps both components side by side and provides a shared install and control center.
+The repository already provides a shared installer and a small control center while both parts stay independently maintainable.
 
-## Repository Layout
+### Repository Layout
 
 - `dual-clock/`: GNOME Shell extension
 - `dual-wallpaper/`: local wallpaper rotator utility, service and preferences app
 - `dual_desktop.py`: unified launcher/control center
 - `install.sh`: unified installer
+- `package-extension.sh`: build the GNOME Shell extension archive from `dual-clock/`
 
-## Install
-
-From the repository root:
+### Install
 
 ```bash
 ./install.sh
@@ -24,26 +25,67 @@ From the repository root:
 
 This installs:
 
-- `Dual Clock`
-- `Dual Wallpaper`
-- a desktop launcher named `Dual Desktop`
+- `Dual Desktop` clock extension
+- `Dual Wallpaper` service and indicator
+- a `Dual Desktop` control center launcher
 
-## Current Integration
+### GNOME Extensions Packaging
 
-`Dual Desktop` provides one visible entry point while still keeping the code split into two stable components.
+```bash
+./package-extension.sh
+```
 
-The control center allows you to:
+This generates:
 
-- open `Dual Clock` settings
-- open `Dual Wallpaper` settings
-- apply the next wallpaper pair
-- apply the previous wallpaper pair
-- restart the wallpaper service
+- `dual-clock/dual-clock@wadohs.zip`
 
-## Merge Roadmap
+Current extension UUID:
 
-1. stabilize `dual-clock`
-2. stabilize `dual-wallpaper`
-3. define shared configuration model
-4. unify naming, docs and packaging
-5. decide whether final delivery remains split or becomes one integrated app/extension set
+- `dual-clock@wadohs`
+
+Before a public GNOME Extensions release, review whether you want to keep this UUID or rename it to match the final public identity.
+
+## FR
+
+`Dual Desktop` regroupe deux composants visibles cote utilisateur pour GNOME :
+
+- `dual-clock` : extension GNOME Shell pour les horloges double ecran
+- `dual-wallpaper` : gestionnaire local de fonds double ecran pour GNOME
+
+Le depot fournit deja un installateur commun et un petit centre de controle, tout en gardant les deux briques separees et maintenables.
+
+### Structure du depot
+
+- `dual-clock/` : extension GNOME Shell
+- `dual-wallpaper/` : utilitaire local de rotation de fonds, service et fenetre de preferences
+- `dual_desktop.py` : lanceur / centre de controle unifie
+- `install.sh` : installateur unifie
+- `package-extension.sh` : fabrique l'archive de l'extension GNOME a partir de `dual-clock/`
+
+### Installation
+
+```bash
+./install.sh
+```
+
+Cela installe :
+
+- l'extension d'horloge `Dual Desktop`
+- le service et l'indicateur `Dual Wallpaper`
+- un lanceur `Dual Desktop`
+
+### Packaging GNOME Extensions
+
+```bash
+./package-extension.sh
+```
+
+Cela genere :
+
+- `dual-clock/dual-clock@wadohs.zip`
+
+UUID actuel de l'extension :
+
+- `dual-clock@wadohs`
+
+Avant une publication publique sur `extensions.gnome.org`, il faudra verifier si cet UUID doit rester tel quel ou etre renomme pour coller a l'identite finale du projet.
