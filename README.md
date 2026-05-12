@@ -7,7 +7,7 @@
 - `dual-clock`: GNOME Shell extension for dual-monitor clocks
 - `dual-wallpaper`: local dual-monitor wallpaper rotator for GNOME
 
-The repository already provides a shared installer and a small control center while both parts stay independently maintainable.
+The repository already provides a shared installer and a unified settings flow while both parts stay independently maintainable.
 
 ### Repository Layout
 
@@ -27,6 +27,11 @@ This installs:
 - `Dual Desktop` clock extension
 - `Dual Wallpaper` service and indicator
 - shared branding assets
+
+Settings are opened either from:
+
+- GNOME Extensions / Extension Manager (`Dual Desktop`)
+- the top bar indicator
 
 ### GNOME Extensions Packaging
 
@@ -51,7 +56,7 @@ Before a public GNOME Extensions release, review whether you want to keep this U
 - `dual-clock` : extension GNOME Shell pour les horloges double ecran
 - `dual-wallpaper` : gestionnaire local de fonds double ecran pour GNOME
 
-Le depot fournit deja un installateur commun et un petit centre de controle, tout en gardant les deux briques separees et maintenables.
+Le depot fournit deja un installateur commun et un flux de reglages unifie, tout en gardant les deux briques separees et maintenables.
 
 ### Structure du depot
 
@@ -71,6 +76,11 @@ Cela installe :
 - l'extension d'horloge `Dual Desktop`
 - le service et l'indicateur `Dual Wallpaper`
 - les ressources de branding partagees
+
+Les reglages s'ouvrent soit depuis :
+
+- GNOME Extensions / Extension Manager (`Dual Desktop`)
+- le menu de l'icone en haut
 
 ### Packaging GNOME Extensions
 
