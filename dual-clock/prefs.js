@@ -348,6 +348,12 @@ export default class DualClockPreferences extends ExtensionPreferences {
         clockGrid.attach(colorAutoSwitch, 1, clockRow, 1, 1);
         clockRow += 1;
 
+        const overlayLabel = createFieldLabel('Au-dessus des fenetres');
+        const overlaySwitch = createSwitch(settings.get_boolean('overlay-above-windows'), widget => settings.set_boolean('overlay-above-windows', widget.get_active()));
+        clockGrid.attach(overlayLabel, 0, clockRow, 1, 1);
+        clockGrid.attach(overlaySwitch, 1, clockRow, 1, 1);
+        clockRow += 1;
+
         addEntry(clockGrid, clockRow++, 'Couleur manuelle (#rrggbb)', 'manual-text-color', '#ffffff');
 
         const orderLabel = createFieldLabel('Heure au-dessus de la date');

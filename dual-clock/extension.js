@@ -207,6 +207,7 @@ class ClockOverlay {
         this.monitorIndex = monitorIndex;
         this.settings = settings;
         this.varietyConfig = varietyConfig;
+        this._attachedToChrome = false;
 
         this.actor = new St.Widget({
             reactive: false,
@@ -221,9 +222,19 @@ class ClockOverlay {
 
         this.actor.add_child(this.clockLabel);
         this.actor.add_child(this.dateLabel);
-        Main.layoutManager.addChrome(this.actor, {
-            trackFullscreen: false,
-        });
+        this._attach();
+    }
+
+    _attach() {
+        if (this.settings.get_boolean('overlay-above-windows')) {
+            Main.layoutManager.addChrome(this.actor, {
+                trackFullscreen: false,
+            });
+            this._attachedToChrome = true;
+        } else {
+            Main.layoutManager._backgroundGroup.add_child(this.actor);
+            this._attachedToChrome = false;
+        }
     }
 
     _sameSettings() {
@@ -391,6 +402,8 @@ class ClockOverlay {
     }
 
     destroy() {
+        if (this._attachedToChrome)
+            Main.layoutManager.removeChrome(this.actor);
         this.actor.destroy();
     }
 }
@@ -404,7 +417,12 @@ export default class DualClockExtension extends Extension {
         this._signals = [];
 
         this._signals.push(Main.layoutManager.connect('monitors-changed', () => this._rebuild()));
-        this._signals.push(this._settings.connect('changed', () => this._updateAll()));
+        this._signals.push(this._settings.connect('changed', (_settings, key) => {
+            if (key === 'overlay-above-windows')
+                this._rebuild();
+            else
+                this._updateAll();
+        }));
 
         this._rebuild();
         this._scheduleTick();
